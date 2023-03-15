@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>BD Education</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+      integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+   <style>
+      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+      * {
+         font-family: "Space Grotesk", sans-serif;
+      }
+
+      .search {
+         min-height: 40vh;
+      }
+
+      #search-btn {
+         position: relative;
+         left: -30px;
+         z-index: 1;
+      }
+   </style>
+</head>
+
+<body>
+   <header>
+      <div class="container my-4 text-center py-3 rounded-pill text-light bg-secondary">
+         <h1>University Hunter</h1>
+      </div>
+   </header>
+
+
+
+   <!-- Modal -->
+   <div class="modal fade modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h1 id="title" class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <div class="main-heading bg-dark text-warning py-3">
+                  <div id="modal-logo" class="d-flex flex-column justify-content-center align-items-center">
+                     <!-- dynamic Value -->
+                  </div>
+               </div>
+               <div class="container">
+                  <div class="row g-5">
+                     <div class="col-12 col-md-7">
+
+                        <div class="description py-3 my-3" style="text-align: justify">
+                           <h5>Things You Should know About <span id="logo-title"></span></h5>
+                           <ul id="information">
+
+                           </ul>
+
+                        </div>
+                     </div>
+                     <div class="col-12 col-md-5">
+                        <div class="faculty pt-3 my-3">
+                           <h6>Established at </h6>
+                           <hr>
+
+                           <p><i class="fa-solid fa-calendar-days me-3"></i> <strong id="date">2002</strong></p>
+
+                        </div>
+                        <div class="faculty py-3 my-3">
+                           <h6>Best Faculty</h6>
+                           <hr>
+                           <ul id="subject">
+                              <li>Chemical Technical/Engineering</li>
+                              <li>Computer Science Engineering</li>
+                              <li>Mechanical Engineering</li>
+                              <li>Botany</li>
+                              <li>Textile Engineering</li>
+                              <li>Mechanical Engineering Engineering</li>
+                           </ul>
+                        </div>
+
+                        <div class="links">
+                           <h6>Website</h6>
+                           <hr />
+                           <a id="website" class="btn btn-outline-primary d-block w-100" target="_blank" href="#">
+                              <i class="fa-solid fa-earth-americas me-3"></i>
+                              <span>au.ac.bd</span>
+
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+   </div>
+
+
+   <main>
+      <section class="search d-flex flex-column justify-content-center align-items-center">
+         <div class="container">
+            <p class="text-center">Search University Name for More information</p>
+            <div class="input-group mb-3 w-75 mx-auto rounded-pill">
+               <input id="input-search" type="text" class="form-control py-2 rounded-5"
+                  placeholder="Search a University Name" aria-label="Recipient's username"
+                  aria-describedby="button-addon2" />
+            </div>
+            <div onclick="search()" class="input-btn text-center">
+               <button class="btn btn-md btn-primary rounded-pill" type="button" id="search-btn">
+                  Search Now
+               </button>
+            </div>
+
+         </div>
+
+         <!-- spinner  -->
+         <section id="spinner" class=" py-5" style="min-height: 600px;">
+            <div class="container d-flex justify-content-center">
+               <div>
+                  <span style="height:10rem ; width: 10rem;" class="spinner-grow spinner-grow-sm" role="status"
+                     aria-hidden="true"></span>
+                  <span class="visually-hidden">Loading...</span>
+
+               </div>
+            </div>
+         </section>
+         <!-- এই কন্টেইনারে ডাটা কে ডিসপ্লে করবো। -->
+
+         <div class="container my-5">
+            <div class="row g-4">
+               <div class="col-md-9 university">
+                  <h2 id="error" class="d-none">No Data Found</h2>
+                  <div id="display-container" class="row row-cols-1 row-cols-lg-2 g-4">
+                     <!-- সব ইউনিভার্সিটি ডিসপ্লে হবে এইখানে  -->
+                  </div>
+                  <div class="button-space mt-3 text-end container">
+                     <!-- see more Button  এইখানে  -->
+                     <button id="see-more-btn" class="btn btn-outline-dark px-5 me-5">See More</button>
+                  </div>
+
+               </div>
+               <div class="col-md-3 data-container">
+                  <div class="data">
+                     <h4>My Selected University</h4>
+                     <button class="btn btn-sm btn-danger" onclick="clearAll()">clear selection</button>
+                     <div class="select-container">
+                        <div id="select" class="row row-cols-1">
+
+                        </div>
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+
+         </div>
+      </section>
+   </main>
+
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"></script>
+   <script src="storage.js"></script>
+   <script src="app.js"></script>
+</body>
+
+</html>
+<!-- spinners -->
+
+
+<!-- <div class="modal fade modal-lg modal-dialog-scrollable" id="uniModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content" style="max-height:650px">
+         <div class="modal-header">
+            <h1 id="title" class="modal-title fs-5" id="exampleModalLabel">
+               American International University - Bangladesh
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <div class="main-heading bg-dark text-warning py-3">
+               <div class="d-flex flex-column justify-content-center align-items-center">
+                  <h1>AIUB</h1>
+                  <p>American International University - Bangladesh</p>
+               </div>
+            </div>
+            <div class="container">
+               <div class="row g-5">
+                  <div class="col-12 col-md-7">
+
+                     <div class="description py-3 my-3" style="text-align: justify">
+                        <h5>Things You Should know About AIUB</h5>
+                        <ul>
+                           <li class="mb-3">
+                              AIUB (American International University-Bangladesh) is a
+                              leading private university in Dhaka, Bangladesh.
+                           </li>
+                           <li class="mb-3">
+                              Established in 1994, it offers undergraduate and
+                              graduate programs in business, engineering, computer
+                              science, law, and liberal arts.
+                           </li>
+                           <li class="mb-3">With a focus on
+                              combining theoretical knowledge with practical skills,
+                              AIUB prepares students for the challenges of the 21st
+                              century.</li>
+                           <li class="mb-3">
+                              The university has a highly qualified faculty, modern
+                              facilities, and strong ties with industry and the community,
+                              providing students with opportunities for internships,
+                              research projects, and community service.
+
+                           </li>
+
+                           <li>AIUB is committed
+                              to providing its students with a high-quality education that
+                              prepares them for success in their chosen fields.</li>
+                        </ul>
+
+                     </div>
+                  </div>
+                  <div class="col-12 col-md-5">
+                     <div class="faculty pt-3 my-3">
+                        <h6>Established at </h6>
+                        <hr>
+
+                        <p><i class="fa-solid fa-calendar-days me-3"></i> <strong>2002</strong></p>
+
+                     </div>
+                     <div class="faculty py-3 my-3">
+                        <h6>Best Faculty</h6>
+                        <hr>
+                        <ul>
+                           <li>Chemical Technical/Engineering</li>
+                           <li>Computer Science Engineering</li>
+                           <li>Mechanical Engineering</li>
+                           <li>Botany</li>
+                           <li>Textile Engineering</li>
+                           <li>Mechanical Engineering Engineering</li>
+                        </ul>
+                     </div>
+
+                     <div class="links">
+                        <h6>Website</h6>
+                        <hr />
+                        <a class="btn btn-outline-primary d-block w-100" href="#"><i
+                              class="fa-solid fa-earth-americas me-3"></i>au.ac.bd</a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div> -->
