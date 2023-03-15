@@ -1,25 +1,16 @@
-// ডাটা ফেচ করতে হবে - Done
-// ফেচ করা ডাটা ডিসপ্লে করাতে হবে। - Done
-// See More বাটন কে ফাংশনাল করবো। - Done
-
-// See More এ একবার ক্লিক হলে এটা হাইড হয়ে যাবে-Done
-// Add Modal to our Application - Done
-
-// Make Title Dynamic - Done
-// Make Logo Dynamic -  Done
-
-// Modal is Now Dynamic
 let isSearch = false;
 let allData = [];
-let allselectedData = getItemFromLocalStorage("selected");
+
+let allselectedData = getItemFromLocalStorage("select");
 console.log(allselectedData);
 const loadData = () => {
   const url = "https://bd-education-techsoros.vercel.app/v1/all/";
   fetch(url)
-    .then((response) => response.json)
+    .then((response) => response.json()) // we have to call json()
     .then((data) => {
-      allData = data;
-      displayData(data.slice(0, 4));
+      allData = data.result; // Data is in the result. so data.result should be stored and passed.
+      console.log(data.result);
+      displayData(data.result.slice(0, 4));
     });
 };
 
@@ -37,16 +28,17 @@ const loadData = () => {
 //   },
 // };
 const displayData = (universities) => {
+  // console.log(universities);
   if (universities.length == 0) {
-    console.log(get("error"));
+    // console.log(get("error"));
     get("error").classList.remove("d-none");
   } else {
-    console.log(get("error"));
+    // console.log(get("error"));
     get("error").classList.add("d-none");
   }
   const container = document.getElementById("display-container");
   container.innerHTML = "";
-  console.log(container);
+  // console.log(container);
   universities.forEach((uni) => {
     const col = document.createElement("div");
     col.classList.add("col");
@@ -63,7 +55,7 @@ const displayData = (universities) => {
                         </div>
                         <div class="col-md-8">
                            <div class="card-body">
-                              <h5 class="card-title">${uni.uniname}</h5>
+                              <h5 class="card-title">${uni.name}</h5>
                               <p class="card-text">
                               ${
                                 uni.description
@@ -75,7 +67,7 @@ const displayData = (universities) => {
                                type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
                               See Details
                               </button>
-                              <button onclick=selectData(${uni.id})
+                              <button onclick=select(${uni.id})
                                type="button" class="btn btn-warning">
                               Select
                               </button>
@@ -102,8 +94,12 @@ const loadDatainModal = (id) => {
 };
 
 const select = (id) => {
+  console.log(allData);
   const selected = allData.find((data) => data.id === id);
-  if (!allselectedData.find((data) => data.id === id)) {
+
+  if (allselectedData.find((data) => data.id === id)) {
+    // No Work will Happen Here
+  } else {
     allselectedData.push(selected);
     localStorage.setItem("select", JSON.stringify(allselectedData));
     showSelectedData(allselectedData);
@@ -117,10 +113,10 @@ const showSelectedData = (data) => {
   data.forEach((uni) => {
     get("select").innerHTML += `
    
-  <div class="card mb-3" style="max-width: 540px;">
+  <div class="card selected-card mb-3" style="max-width: 540px;">
      <div class="row g-0">
         <div class="col-12">
-           <div  style="background:${uni.logo}"
+           <div  style="background:${uni.logo.color}"
               class=" mt-2 d-flex h-100 align-items-center justify-content-center">
               <h2>${uni.logo.title}</h2>
            </div>
@@ -142,16 +138,25 @@ const showSelectedData = (data) => {
   </div>
 
 `;
+
+    const cards = document.getElementsByClassName("selected-card");
+    for (let card of cards) {
+      card.addEventListener("click", (e) => {
+        if (e.target.tagName == "I") {
+          card.remove();
+        }
+      });
+    }
   });
 };
 const remove = (id, uniId) => {
-  get(id).parentNode.remove();
-  removeItemFromLocalStorage("selected", uniId);
+  removeItemFromLocalStorage("select", uniId);
 };
 
 const clearAll = () => {
-  clearData("selected");
+  clearData("select");
   allselectedData = [];
+  get("select").innerHTML = "";
 };
 ///// detail object prototype
 // const uni = {
@@ -188,7 +193,7 @@ const clearAll = () => {
 //   },
 // };
 const displayModalData = (uni) => {
-  console.log(uni);
+  // console.log(uni);
 
   //set Dynamic Title
   const title = get("title");
@@ -220,7 +225,7 @@ const displayModalData = (uni) => {
   `
     : "No Website Found";
   get("website").setAttribute("href", uni.web_pages ? uni.web_pages[0] : "#_");
-  console.log(uni.keyInformations);
+  // console.log(uni.keyInformations);
 
   //set Key Information to Modal
   get("information").innerHTML = uni.keyInformations
@@ -235,9 +240,9 @@ document.getElementById("see-more-btn").addEventListener("click", () => {
     url = `https://bd-education-techsoros.vercel.app/v1/all/search/${
       get("input-search").value
     }`;
-    console.log(url);
+    // console.log(url);
   } else {
-    console.log(url);
+    // console.log(url);
     url = "https://bd-education-techsoros.vercel.app/v1/all/";
   }
 
@@ -251,10 +256,15 @@ document.getElementById("see-more-btn").addEventListener("click", () => {
 
 const search = () => {
   const searchText = get("input-search").value;
+  if (searchText.length == 0) {
+    console.log("Search box is empty");
+    return alert("Search box is empty");
+  }
+
   isSearch = true;
   const url = `https://bd-education-techsoros.vercel.app/v1/all/search/${searchText}`;
   spinner(true);
-  console.log(url);
+  // console.log(url);
   fetch(url)
     .then((response) => response.json())
     .then((data) => {
@@ -272,9 +282,9 @@ const get = (id) => {
   return document.getElementById(id);
 };
 const getListFromArray = (arr) => {
-  console.log(arr);
+  // console.log(arr);
   const list = arr.map((element) => `<li>${element}</li>`);
-  console.log(list);
+  // console.log(list);
   //join Method Converts an array into a string
   return list.join("");
 };
@@ -287,12 +297,12 @@ const getListFromObject = (obj) => {
 };
 
 const spinner = (isLoading) => {
-  console.log(get("spinner"));
+  // console.log(get("spinner"));
   if (isLoading) {
-    console.log(isLoading);
+    // console.log(isLoading);
     get("spinner").style.display = "block";
   } else {
-    console.log(isLoading);
+    // console.log(isLoading);
     get("spinner").style.display = "none";
   }
 };
